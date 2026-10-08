@@ -55,3 +55,11 @@ jobs:
         with:
           name: sudont-musl
           path: sudont-musl
+
+  put-releases:
+      wowie:
+          needs:
+            - build
+            - build-musl
+
+          runs-on: ubuntu-latest
