@@ -1,2 +1,3 @@
 # sudont
-sudo = do as root sudont = dont run as root
+sudo = do as root 
+sudont = dont run as root
