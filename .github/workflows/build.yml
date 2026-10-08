@@ -57,10 +57,9 @@ jobs:
           path: sudont-musl
 
   put-releases:
-      wowie:
-          needs:
-            - build
-            - build-musl
+        needs:
+          - build
+          - build-musl
 
           runs-on: ubuntu-latest
 
