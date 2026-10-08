@@ -13,14 +13,17 @@ if ARGV.includes?("-yes") || ARGV.includes?("-y") || ARGV.includes?("--yes")
 end
 
 if ARGV.includes?("--please")
-  print "only if you type \"c++ is easy for beginners\""
+  print "only if you type \"c++ is easy for beginners\": "
   input = gets.not_nil!.chomp
   if input.downcase == "c++ is easy for beginners"
     puts "HA, you think i would let you execute?"
     puts "💥"
     puts "Permission denied"
-  else
-    puts "try again!"
+  elsif input.downcase == "please, senpai" || input.downcase == "please senpai"
+    puts "ok, you win..."
+    sleep 3.seconds
+    puts "but NO!"
+    puts "Permission denied"
   end
 end
 
