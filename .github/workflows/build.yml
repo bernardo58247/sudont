@@ -15,9 +15,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: install crystal
-        uses: crystal-lang/install-crystal@v1
-        with:
-          crystal: latest
+        run: |
+          apk add --no-cache crystal shards
+          crystal --version
+          shards --version
 
       - name: compile
         run: |
