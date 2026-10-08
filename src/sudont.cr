@@ -1,3 +1,4 @@
+# Permission denied
 arg = ARGV[0]?
 
 unless arg
