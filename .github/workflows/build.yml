@@ -23,13 +23,11 @@ jobs:
         run: |
           crystal build src/sudont.cr --release -O3 -o sudont-glibc --static
 
-      - name: put on release
-        if: ${{ success() }}
-        uses: softprops/action-gh-release@v2
+      - name: upload glibc
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: latest-sudont
-          name: latest-sudont
-          files: sudont-glibc
+          name: sudont-glibc
+          path: sudont-glibc
 
   build-musl:
     runs-on: ubuntu-latest
@@ -52,10 +50,8 @@ jobs:
         run: |
           crystal build src/sudont.cr --release -O3 -o sudont-musl --static
 
-      - name: put on release
-        if: ${{ success() }}
-        uses: softprops/action-gh-release@v2
+      - name: upload musl
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: latest-sudont
-          name: latest-sudont
-          files: sudont-musl
+          name: sudont-musl
+          path: sudont-musl
