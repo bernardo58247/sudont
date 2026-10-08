@@ -19,12 +19,18 @@ if ARGV.includes?("--please")
     puts "HA, you think i would let you execute?"
     puts "💥"
     puts "Permission denied"
+    exit 1
   elsif input.downcase == "please, senpai" || input.downcase == "please senpai"
     puts "ok, you win..."
     sleep 3.seconds
     puts "but NO!"
     puts "Permission denied"
+    exit 1
   end
+end
+
+if ARGV.includes?("-v") || ARGV.includes?("--version")
+  puts "sudont, version: 80.101.114.109.105.115.115.105.111.110.32.100.101.110.105.101.100 (Permission denied edition)
 end
 
 puts "#{ARGV[0]}: Permission denied"
