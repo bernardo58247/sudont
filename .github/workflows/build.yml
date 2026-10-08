@@ -21,7 +21,11 @@ jobs:
 
       - name: compile
         run: |
-          crystal build src/sudont.cr --release -O3 -o sudont-glibc --static
+          crystal build src/sudont.cr \
+            --release \
+            -O3 \
+            --static \
+            -o sudont-glibc
 
       - name: upload glibc
         uses: actions/upload-artifact@v4
@@ -31,7 +35,9 @@ jobs:
 
   build-musl:
     runs-on: ubuntu-latest
-    container: alpine:latest
+
+    container:
+      image: crystallang/crystal:latest-alpine
 
     steps:
       - name: download code
@@ -39,17 +45,24 @@ jobs:
 
       - name: install dependencies
         run: |
-          apk add --no-cache curl bash git
+          apk add --no-cache \
+            gc-static \
+            gcc \
+            musl-dev \
+            binutils
 
-      - name: install crystal
+      - name: check crystal
         run: |
-          apk add --no-cache crystal shards
           crystal --version
           shards --version
 
       - name: compile
         run: |
-          crystal build src/sudont.cr --release -O3 -o sudont-musl --static
+          crystal build src/sudont.cr \
+            --release \
+            -O3 \
+            --static \
+            -o sudont-musl
 
       - name: upload musl
         uses: actions/upload-artifact@v4
@@ -65,17 +78,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: baixar glibc
+      - name: download glibc
         uses: actions/download-artifact@v4
         with:
           name: sudont-glibc
 
-      - name: baixar musl
+      - name: download musl
         uses: actions/download-artifact@v4
         with:
           name: sudont-musl
 
-      - name: criar release
+      - name: make release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest-sudont
