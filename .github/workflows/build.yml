@@ -63,3 +63,15 @@ jobs:
             - build-musl
 
           runs-on: ubuntu-latest
+
+          steps:
+              - name: baixar glibc
+                uses:
+actions/download-artifact@v4
+                with:
+                  name: sudont-glibc
+
+              - name: baixar musl
+                uses: actions/download-artifact@v4
+                with:
+                  name: sudont-musl
