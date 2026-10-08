@@ -57,29 +57,28 @@ jobs:
           path: sudont-musl
 
   put-releases:
-        needs:
-          - build
-          - build-musl
+    needs:
+      - build
+      - build-musl
 
-          runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-          steps:
-              - name: baixar glibc
-                uses:
-actions/download-artifact@v4
-                with:
-                  name: sudont-glibc
+    steps:
+      - name: baixar glibc
+        uses: actions/download-artifact@v4
+        with:
+          name: sudont-glibc
 
-              - name: baixar musl
-                uses: actions/download-artifact@v4
-                with:
-                  name: sudont-musl
+      - name: baixar musl
+        uses: actions/download-artifact@v4
+        with:
+          name: sudont-musl
 
-              - name: criar release
-                uses: softprops/action-gh-release@v2
-                with:
-                  tag_name: latest-sudont
-                  name: latest-sudont
-                  files: |
-                     sudont-glibc
-                     sudont-musl
+      - name: criar release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest-sudont
+          name: latest-sudont
+          files: |
+            sudont-glibc
+            sudont-musl
