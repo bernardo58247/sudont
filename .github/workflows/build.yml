@@ -21,7 +21,7 @@ jobs:
 
       - name: compile
         run: |
-          crystal build src/sudont.cr --release -O3 -o sudont-glibc
+          crystal build src/sudont.cr --release -O3 -o sudont-glibc --static
 
       - name: put on release
         if: ${{ success() }}
@@ -50,7 +50,7 @@ jobs:
 
       - name: compile
         run: |
-          crystal build src/sudont.cr --release -O3 -o sudont-musl
+          crystal build src/sudont.cr --release -O3 -o sudont-musl --static
 
       - name: put on release
         if: ${{ success() }}
