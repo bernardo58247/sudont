@@ -6,4 +6,10 @@ unless arg
   exit 1
 end
 
+if ARGV.includes?("-yes") || ARGV.includes?("-y") || ARGV.includes?("--yes")
+  loop do
+    puts "Permission denied"
+  end
+end
+
 puts "#{ARGV[0]}: Permission denied"
