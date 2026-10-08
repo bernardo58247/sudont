@@ -1,2 +1,1 @@
-# sudont
-sudont, dont run as root
+Permission denied (joke program made in crystal by me)
