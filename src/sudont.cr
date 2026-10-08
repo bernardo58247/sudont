@@ -1,4 +1,7 @@
 # Permission denied
+def sle1
+ sleep 1.seconds
+end
 
 arg = ARGV[0]?
 
@@ -43,5 +46,42 @@ if ARGV[0] == "sudont"
 puts "did you just really try to sudont sudont? well, still..."
 puts "Permission denied"
 exit 9999
+end
+
+if ARGV.includes?("-s") || ARGV.includes?("--slow")
+  print "P"
+  sle1
+  print "e"
+  sle1
+  print "r"
+  sle1
+  print "m"
+  sle1
+  print "i"
+  sle1
+  print "s"
+  sle1
+  print "s"
+  sle1
+  print "i"
+  sle1
+  print "o"
+  sle1
+  print "n"
+  sle1 
+  print " "
+  sle1 
+  print "d"
+  sle1
+  print "e"
+  sle1
+  print "n"
+  sle1
+  print "i"
+  sle1
+  print "e"
+  sle1
+  print "d"
+  exit 119111119105101
 end
 puts "#{ARGV[0]}: Permission denied"
