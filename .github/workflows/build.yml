@@ -18,7 +18,7 @@ jobs:
         uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
-        
+
       - name: compile
         run: |
           crystal build src/sudont.cr --release -O3 -o sudont-glibc --static
@@ -41,8 +41,8 @@ jobs:
         run: |
           apk add --no-cache curl bash git
 
-     - name: install crystal
-       run: |
+      - name: install crystal
+        run: |
           apk add --no-cache crystal shards
           crystal --version
           shards --version
