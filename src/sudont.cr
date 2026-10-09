@@ -87,4 +87,8 @@ if ARGV.includes?("-s") || ARGV.includes?("--slow")
   exit 255.to_i32
 end
 
+if ARGV.includes?("--tsundere") || ARGV.includes?("-t")
+  puts "Permission denied"
+  puts "i-it's not like I wanted to execute this, b- baka!"
+end
 puts "#{ARGV[0]}: Permission denied"
