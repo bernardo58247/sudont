@@ -61,6 +61,8 @@ jobs:
       - name: Build glibc statically
         if: matrix.libc == 'glibc'
         run: |
+          set -eu
+
           crystal --version
 
           crystal build src/sudont.cr \
@@ -72,11 +74,15 @@ jobs:
       - name: Build musl statically
         if: matrix.libc == 'musl'
         run: |
+          set -eu
+
           docker run --rm \
             -v "$PWD:/src" \
             -w /src \
             crystallang/crystal:latest-alpine \
             sh -lc '
+              set -eu
+
               apk add --no-cache \
                 gc-static \
                 gcc \
@@ -137,6 +143,32 @@ jobs:
 
           echo "Release assets:"
           ls -lh release/
+
+      - name: Remove obsolete generic assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+
+          if gh release view latest-sudont \
+            --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+
+            for asset in sudont-glibc sudont-musl; do
+              if gh release view latest-sudont \
+                --repo "$GITHUB_REPOSITORY" \
+                --json assets \
+                --jq '.assets[].name' | grep -Fxq "$asset"; then
+
+                gh release delete-asset latest-sudont "$asset" \
+                  --repo "$GITHUB_REPOSITORY" \
+                  --yes
+
+                echo "Removed obsolete asset: $asset"
+              fi
+            done
+          else
+            echo "Release latest-sudont does not exist yet."
+          fi
 
       - name: Update latest-sudont
         env:
