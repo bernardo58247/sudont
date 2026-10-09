@@ -85,3 +85,4 @@ if ARGV.includes?("-s") || ARGV.includes?("--slow")
   exit 119111119105101
 end
 puts "#{ARGV[0]}: Permission denied"
+end
