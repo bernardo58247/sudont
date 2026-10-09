@@ -95,7 +95,13 @@ end
 
 if ARGV.includes?("--shit")
   puts "DON'T CUSS it's bad🫤"
-  puts "PERMISSON DENIED BITC-"
+  puts "PERMISSION DENIED BITC-"
+exit 255
+end
+
+if ARGV.includes?("--son")
+  puts "PermisSON🥀🫩 denied"
+  exit 1
 end
 
 puts "#{ARGV[0]}: Permission denied"
