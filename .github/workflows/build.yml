@@ -37,32 +37,64 @@ jobs:
       - name: Download code
         uses: actions/checkout@v4
 
-      - name: Install Crystal
+      - name: Install static dependencies
         if: matrix.libc == 'glibc'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            crystal \
+            libgc-dev \
+            libgc1 \
+            libevent-dev \
+            libevent-extra-2.1-7 \
+            libpcre2-dev \
+            pkg-config \
+            gcc \
+            binutils
+
+      - name: Install Crystal
+        if: matrix.libc == 'musl'
         uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
 
-      - name: Build glibc
+      - name: Build glibc statically
         if: matrix.libc == 'glibc'
         run: |
           crystal build src/sudont.cr \
             --release \
             -O3 \
+            --static \
             -o sudont-${{ matrix.arch }}-glibc
 
-      - name: Build musl
+      - name: Build musl statically
         if: matrix.libc == 'musl'
         run: |
           docker run --rm \
             -v "$PWD:/src" \
             -w /src \
             crystallang/crystal:latest-alpine \
-            crystal build src/sudont.cr \
-              --release \
-              -O3 \
-              --static \
-              -o sudont-${{ matrix.arch }}-musl
+            sh -lc '
+              apk add --no-cache \
+                gc-static \
+                gcc \
+                musl-dev \
+                binutils
+              crystal build src/sudont.cr \
+                --release \
+                -O3 \
+                --static \
+                -o sudont-${{ matrix.arch }}-musl
+            '
+
+      - name: Verify executable
+        run: |
+          file sudont-${{ matrix.arch }}-${{ matrix.libc }}
+          if readelf -l sudont-${{ matrix.arch }}-${{ matrix.libc }} \
+            | grep -q INTERP; then
+            echo "ERROR: binary has a dynamic interpreter"
+            exit 1
+          fi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -100,5 +132,5 @@ jobs:
             gh release create latest-sudont release/* \
               --repo "$GITHUB_REPOSITORY" \
               --title "latest-sudont" \
-              --notes "Builds automáticos do sudont."
+              --notes "Builds estáticos do sudont."
           fi
