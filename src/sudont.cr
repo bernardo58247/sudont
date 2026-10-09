@@ -114,4 +114,10 @@ if ARGV.includes?("--verify")
   exit 1
 end
 
+if ARGV.includes?("--cpp-or-crystal")
+  puts "if you like ruby: crystal"
+  puts "if you want to meet the seven-headed monste-"
+  puts "c++"
+end
+
 puts "#{ARGV[0]}: Permission denied"
