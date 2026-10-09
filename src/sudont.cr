@@ -35,7 +35,7 @@ end
 
 if ARGV.includes?("-v") || ARGV.includes?("--version")
 puts "sudont, version: 80.101.114.109.105.115.115.105.111.110.32.100.101.110.105.101.100 (Permission denied edition)
-end
+end"
 
 if ARGV.includes?("--japanese")
 puts ("許可が拒否されました")
