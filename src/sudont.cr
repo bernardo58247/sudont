@@ -111,5 +111,7 @@ if ARGV.includes?("--verify")
   sleep 3.seconds
   puts "NO!"
   puts "Permission denied"
+  exit 1
 end
+
 puts "#{ARGV[0]}: Permission denied"
