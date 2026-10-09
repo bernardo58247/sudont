@@ -90,5 +90,6 @@ end
 if ARGV.includes?("--tsundere") || ARGV.includes?("-t")
   puts "Permission denied"
   puts "i-it's not like I wanted to execute this, b- baka!"
+  exit 0
 end
 puts "#{ARGV[0]}: Permission denied"
