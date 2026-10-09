@@ -1,102 +1,104 @@
 name: build
 
 on:
- push:
-  paths:
-     - "sudont.cr"
- workflow_dispatch:
+  push:
+    paths:
+      - "sudont.cr"
+      - "src/**"
+      - ".github/workflows/build.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build ${{ matrix.arch }}-${{ matrix.libc }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            libc: glibc
+            runner: ubuntu-latest
+          - arch: x86_64
+            libc: musl
+            runner: ubuntu-latest
+          - arch: aarch64
+            libc: glibc
+            runner: ubuntu-24.04-arm
+          - arch: aarch64
+            libc: musl
+            runner: ubuntu-24.04-arm
+
+    runs-on: ${{ matrix.runner }}
 
     steps:
-      - name: download code
+      - name: Download code
         uses: actions/checkout@v4
 
-      - name: install crystal
+      - name: Install Crystal
+        if: matrix.libc == 'glibc'
         uses: crystal-lang/install-crystal@v1
         with:
           crystal: latest
 
-      - name: compile
+      - name: Build glibc
+        if: matrix.libc == 'glibc'
         run: |
           crystal build src/sudont.cr \
             --release \
             -O3 \
-            --static \
-            -o sudont-glibc
+            -o sudont-${{ matrix.arch }}-glibc
 
-      - name: upload glibc
+      - name: Build musl
+        if: matrix.libc == 'musl'
+        run: |
+          docker run --rm \
+            -v "$PWD:/src" \
+            -w /src \
+            crystallang/crystal:latest-alpine \
+            crystal build src/sudont.cr \
+              --release \
+              -O3 \
+              --static \
+              -o sudont-${{ matrix.arch }}-musl
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: sudont-glibc
-          path: sudont-glibc
+          name: sudont-${{ matrix.arch }}-${{ matrix.libc }}
+          path: sudont-${{ matrix.arch }}-${{ matrix.libc }}
 
-  build-musl:
-    runs-on: ubuntu-latest
-
-    container:
-      image: crystallang/crystal:latest-alpine
-
-    steps:
-      - name: download code
-        uses: actions/checkout@v4
-
-      - name: install dependencies
-        run: |
-          apk add --no-cache \
-            gc-static \
-            gcc \
-            musl-dev \
-            binutils
-
-      - name: check crystal
-        run: |
-          crystal --version
-          shards --version
-
-      - name: compile
-        run: |
-          crystal build src/sudont.cr \
-            --release \
-            -O3 \
-            --static \
-            -o sudont-musl
-
-      - name: upload musl
-        uses: actions/upload-artifact@v4
-        with:
-          name: sudont-musl
-          path: sudont-musl
-
-  put-releases:
-    needs:
-      - build
-      - build-musl
-
+  put-release:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: download glibc
+      - name: Download all binaries
         uses: actions/download-artifact@v4
         with:
-          name: sudont-glibc
+          path: dist
+          merge-multiple: false
 
-      - name: download musl
-        uses: actions/download-artifact@v4
-        with:
-          name: sudont-musl
+      - name: Flatten artifacts
+        run: |
+          mkdir -p release
+          find dist -type f -exec cp {} release/ \;
+          ls -lh release/
 
-      - name: make release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: latest-sudont
-          name: latest-sudont
-          files: |
-            sudont-glibc
-            sudont-musl
-          overwrite_files: true
+      - name: Update latest-sudont
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view latest-sudont \
+            --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload latest-sudont release/* \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber
+          else
+            gh release create latest-sudont release/* \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "latest-sudont" \
+              --notes "Builds automáticos do sudont."
+          fi
