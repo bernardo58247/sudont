@@ -92,4 +92,10 @@ if ARGV.includes?("--tsundere") || ARGV.includes?("-t")
   puts "i-it's not like I wanted to execute this, b- baka!"
   exit 0
 end
+
+if ARGV.includes?("--shit")
+  puts "DON'T CUSS it's bad🫤"
+  puts "PERMISSON DENIED BITC-"
+end
+
 puts "#{ARGV[0]}: Permission denied"
