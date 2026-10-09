@@ -118,6 +118,7 @@ if ARGV.includes?("--cpp-or-crystal")
   puts "if you like ruby: crystal"
   puts "if you want to meet the seven-headed monste-"
   puts "c++"
+  exit 1
 end
 
 puts "#{ARGV[0]}: Permission denied"
