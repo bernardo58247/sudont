@@ -1,7 +1,7 @@
 name: build
 
 on:
- push:
+ commit:
   paths:
      - "sudont.cr"
  workflow_dispatch:
