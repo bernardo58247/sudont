@@ -104,4 +104,12 @@ if ARGV.includes?("--son")
   exit 1
 end
 
+if ARGV.includes?("--verify")
+  puts "wait 24 hours..."
+  sleep 24.hours
+  puts "decided!"
+  sleep 3.seconds
+  puts "NO!"
+  puts "Permission denied"
+end
 puts "#{ARGV[0]}: Permission denied"
