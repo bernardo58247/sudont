@@ -14,6 +14,7 @@ permissions:
 jobs:
   build:
     name: Build ${{ matrix.arch }}-${{ matrix.libc }}
+
     strategy:
       fail-fast: false
       matrix:
@@ -21,12 +22,15 @@ jobs:
           - arch: x86_64
             libc: glibc
             runner: ubuntu-latest
+
           - arch: x86_64
             libc: musl
             runner: ubuntu-latest
+
           - arch: aarch64
             libc: glibc
             runner: ubuntu-24.04-arm
+
           - arch: aarch64
             libc: musl
             runner: ubuntu-24.04-arm
@@ -37,30 +41,28 @@ jobs:
       - name: Download code
         uses: actions/checkout@v4
 
-      - name: Install static dependencies
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+
+      - name: Install glibc static dependencies
         if: matrix.libc == 'glibc'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            crystal \
             libgc-dev \
-            libgc1 \
             libevent-dev \
-            libevent-extra-2.1-7 \
             libpcre2-dev \
             pkg-config \
             gcc \
             binutils
 
-      - name: Install Crystal
-        if: matrix.libc == 'musl'
-        uses: crystal-lang/install-crystal@v1
-        with:
-          crystal: latest
-
       - name: Build glibc statically
         if: matrix.libc == 'glibc'
         run: |
+          crystal --version
+
           crystal build src/sudont.cr \
             --release \
             -O3 \
@@ -80,6 +82,9 @@ jobs:
                 gcc \
                 musl-dev \
                 binutils
+
+              crystal --version
+
               crystal build src/sudont.cr \
                 --release \
                 -O3 \
@@ -89,20 +94,29 @@ jobs:
 
       - name: Verify executable
         run: |
-          file sudont-${{ matrix.arch }}-${{ matrix.libc }}
-          if readelf -l sudont-${{ matrix.arch }}-${{ matrix.libc }} \
-            | grep -q INTERP; then
-            echo "ERROR: binary has a dynamic interpreter"
+          set -eu
+
+          BIN="sudont-${{ matrix.arch }}-${{ matrix.libc }}"
+
+          test -x "$BIN"
+          file "$BIN"
+
+          if readelf -l "$BIN" | grep -q INTERP; then
+            echo "ERROR: executable still has a dynamic interpreter"
             exit 1
           fi
+
+          echo "ELF interpreter not found."
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: sudont-${{ matrix.arch }}-${{ matrix.libc }}
           path: sudont-${{ matrix.arch }}-${{ matrix.libc }}
+          if-no-files-found: error
 
   put-release:
+    name: Update latest-sudont
     needs: build
     runs-on: ubuntu-latest
 
@@ -113,18 +127,26 @@ jobs:
           path: dist
           merge-multiple: false
 
-      - name: Flatten artifacts
+      - name: Prepare release assets
         run: |
+          set -eu
+
           mkdir -p release
+
           find dist -type f -exec cp {} release/ \;
+
+          echo "Release assets:"
           ls -lh release/
 
       - name: Update latest-sudont
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -eu
+
           if gh release view latest-sudont \
             --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+
             gh release upload latest-sudont release/* \
               --repo "$GITHUB_REPOSITORY" \
               --clobber
