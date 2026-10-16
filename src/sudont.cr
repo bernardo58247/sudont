@@ -22,7 +22,7 @@ if ARGV.includes?("--please")
   input = gets.not_nil!.chomp
 
   if input.downcase == "c++ is easy for beginners"
-    puts "HA, you think i would let you execute?"
+    puts "HA, you think i would let you execute, #{`whoami`.strip}?"
     puts "💥"
     puts "Permission denied"
     exit 1.to_i32
