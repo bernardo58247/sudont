@@ -7,7 +7,7 @@ end
 arg = ARGV[0]?
 
 unless arg
-  puts "Permission denied"
+  puts "sudont: Permission denied"
   exit 1.to_i32
 end
 
@@ -24,13 +24,13 @@ if ARGV.includes?("--please")
   if input.downcase == "c++ is easy for beginners"
     puts "HA, you think i would let you execute, #{`whoami`.strip}?"
     puts "💥"
-    puts "Permission denied"
+    puts "sudont: Permission denied"
     exit 1.to_i32
   elsif input.downcase == "please, senpai" || input.downcase == "please senpai"
     puts "ok, you win..."
     sleep 3.seconds
     puts "but NO!"
-    puts "Permission denied"
+    puts "sudont: Permission denied"
     exit 1.to_i32
   end
 end
@@ -40,13 +40,13 @@ if ARGV.includes?("-v") || ARGV.includes?("--version")
 end
 
 if ARGV.includes?("--japanese")
-  puts "許可が拒否されました"
+  puts "sudont: 許可が拒否されました"
   exit 1.to_i32
 end
 
 if ARGV[0] == "sudont"
   puts "did you just really try to sudont sudont? well, still..."
-  puts "Permission denied"
+  puts "sudont: sudont: Permission denied"
   exit 255.to_i32
 end
 
@@ -87,20 +87,21 @@ if ARGV.includes?("-s") || ARGV.includes?("--slow")
   exit 255.to_i32
 end
 
+# help me
 if ARGV.includes?("--tsundere") || ARGV.includes?("-t")
-  puts "Permission denied"
+  puts "sudont: Permission denied"
   puts "i-it's not like I wanted to execute this, b- baka!"
   exit 0
 end
 
 if ARGV.includes?("--shit")
   puts "DON'T CUSS it's bad🫤"
-  puts "PERMISSION DENIED BITC-"
+  puts "sudont: PERMISSION DENIED BITC-"
 exit 255
 end
 
 if ARGV.includes?("--son")
-  puts "PermisSON🥀🫩 denied"
+  puts "sudont: PermisSON🥀🫩 denied"
   exit 1
 end
 
@@ -110,7 +111,7 @@ if ARGV.includes?("--verify")
   puts "decided!"
   sleep 3.seconds
   puts "NO!"
-  puts "Permission denied"
+  puts "sudont: Permission denied"
   exit 1
 end
 
@@ -121,4 +122,4 @@ if ARGV.includes?("--cpp-or-crystal")
   exit 1
 end
 
-puts "#{ARGV[0]}: Permission denied"
+puts "sudont: #{ARGV[0]}: Permission denied"
