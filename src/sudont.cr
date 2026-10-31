@@ -122,4 +122,13 @@ if ARGV.includes?("--cpp-or-crystal")
   exit 1
 end
 
+if ARGV.includes?("--pretty-please-with-sugar-on-top")
+  puts "with sugar on top?"
+  puts "..."
+  puts "ok..."
+  sleep 3.seconds
+  puts "NO!"
+  puts "Permission Denied"
+end
+
 puts "sudont: #{ARGV[0]}: Permission denied"
