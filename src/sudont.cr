@@ -128,7 +128,8 @@ if ARGV.includes?("--pretty-please-with-sugar-on-top")
   puts "ok..."
   sleep 3.seconds
   puts "NO!"
-  puts "Permission Denied"
+  puts "Permission denied"
+  exit 255
 end
 
 puts "sudont: #{ARGV[0]}: Permission denied"
